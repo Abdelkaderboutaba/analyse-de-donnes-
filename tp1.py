@@ -1,20 +1,16 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
-from sklearn.datasets import load_iris
 
-# Charger un jeu de données
-iris = load_iris()
-X = iris.data  # Variables initiales
 
-# Appliquer l'ACP pour réduire à 2 dimensions
-pca = PCA(n_components=2)
-X_pca = pca.fit_transform(X)
 
-# Affichage des données transformées
-plt.scatter(X_pca[:, 0], X_pca[:, 1], c=iris.target, cmap='viridis', alpha=0.7)
-plt.xlabel("Composante principale 1")
-plt.ylabel("Composante principale 2")
-plt.title("ACP sur le jeu de données Iris")
-plt.colorbar()
-plt.show()
+M = np.array([
+    [6, 6, 5, 5.5, 8],
+    [8, 8, 8, 8, 9],
+    [6, 7, 11, 9.5, 11],
+    [14.5, 14.5, 15.5, 15, 8],
+    [14, 14, 12, 12, 10],
+    [11, 10, 5.5, 7, 13],
+    [5.5, 7, 14, 8, 13],
+    [13, 12.5, 8.5, 9.5, 12],
+    [9, 9.5, 12.5, 12, 18]
+])
+
