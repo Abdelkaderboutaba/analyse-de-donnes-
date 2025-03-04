@@ -42,6 +42,17 @@ df_distance = pd.DataFrame({
 })
 print("\nCarré de la distance des individus au centre du nuage :\n", df_distance)
 
+
+#✅ Interprétation :
+
+# Les grandes distances indiquent des individus atypiques.
+# Une distance faible signifie que l’individu est moyen par rapport aux autres.
+
+
+
+
+
+
 # ----------------------
 # 3️⃣ Qualité de représentation (COS²)
 # ----------------------
@@ -50,6 +61,18 @@ df_qualite = pd.DataFrame(qualite_representation.round(4),
                           index=["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9"], 
                           columns=["PC1", "PC2", "PC3"])
 print("\nQualité de représentation des individus (COS²) :\n", df_qualite)
+
+
+# ✅ Interprétation :
+
+# Si un individu a un COS² faible sur PC1 et PC2, il est mieux représenté sur PC3 ou d’autres axes.
+# Si un individu a COS² ≈ 1 sur PC1, il est principalement caractérisé par cet axe.
+
+
+
+
+
+
 
 # ----------------------
 # 4️⃣ Contribution des individus à l’inertie des axes
@@ -60,6 +83,18 @@ df_contribution = pd.DataFrame(contribution.round(4),
                                columns=["PC1", "PC2", "PC3"])
 print("\nContribution des individus à l’inertie des axes :\n", df_contribution)
 
+
+
+# ✅ Interprétation :
+
+# Si un individu a une forte contribution sur un axe, il est très influent.
+# Un individu avec une faible contribution sur tous les axes est neutre/moyen.
+
+
+
+
+
+
 # ----------------------
 # 5️⃣ Coordonnées des variables sur les axes principaux
 # ----------------------
@@ -68,6 +103,15 @@ df_coord_var = pd.DataFrame(coord_var.round(4),
                             index=["Multimedia", "Maths", "Système", "Réseau", "Autre"], 
                             columns=["PC1", "PC2", "PC3"])
 print("\nCoordonnées des variables sur les axes principaux :\n", df_coord_var)
+
+
+# ✅ Interprétation :
+
+# Une variable proche de 1 sur PC1 est fortement corrélée avec PC1.
+# Si une variable a une forte valeur sur PC2 et une faible sur PC1, alors elle est mieux représentée par PC2.
+
+
+
 
 # ----------------------
 # 6️⃣ Cercle des corrélations
@@ -97,6 +141,16 @@ axes[1].set_title("Cercle des Corrélations (PC1 vs PC3)")
 plt.tight_layout()
 plt.show()
 
+
+# ✅ Interprétation :
+
+# Si deux variables sont proches → Elles sont corrélées.
+# Si une variable est proche de (1,0) sur PC1, elle est fortement liée à cet axe.
+
+
+
+
+
 # ----------------------
 # 7️⃣ Biplot : Projection des individus et variables
 # ----------------------
@@ -119,3 +173,10 @@ plt.ylabel("PC2")
 plt.title("Biplot : Indices et Variables")
 plt.grid()
 plt.show()
+
+
+
+# ✅ Interprétation :
+
+# Les individus proches d’une variable sont associés à cette variable.
+# Les flèches rouges montrent la relation entre variables et axes.
