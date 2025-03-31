@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import cv2
 from sklearn.decomposition import PCA
@@ -22,7 +23,7 @@ def load_images_from_folder(folder, target_size=(128, 128)):
             images.append(img)
     return np.array(images)
 
-# Étape 2 : Extraire des descripteurs SIFT
+# Étape 2 : Extraire des caractéristiques avec SIFT
 def extract_sift_features(images):
     """
     Extrait des descripteurs SIFT pour chaque image.
@@ -37,7 +38,7 @@ def extract_sift_features(images):
             descriptors_list.append(descriptors)
     return descriptors_list
 
-# Étape 3 : Créer un Bag of Visual Words (BoVW)
+# Étape 3 : Agréger les descripteurs SIFT en une représentation globale (Bag of Visual Words)
 def create_bovw(descriptors_list, n_clusters=100):
     """
     Crée un Bag of Visual Words (BoVW) à partir des descripteurs SIFT.
@@ -68,7 +69,7 @@ def apply_acpn(features, n_components=2):
     Applique l'ACPN (PCA avec standardisation) sur les caractéristiques.
     :param features: Tableau NumPy des caractéristiques.
     :param n_components: Nombre de composantes principales à conserver (par défaut 2).
-    :return: Tableau NumPy des caractéristiques réduites, variance expliquée, et composantes principales.
+    :return: Tableau NumPy des caractéristiques réduites.
     """
     # Standardisation des caractéristiques
     scaler = StandardScaler()
@@ -77,30 +78,10 @@ def apply_acpn(features, n_components=2):
     # Application de l'ACPN
     acpn = PCA(n_components=n_components)
     features_reduced = acpn.fit_transform(features_standardized)
-    return features_reduced, acpn.explained_variance_ratio_, acpn.components_
+    return features_reduced, acpn.explained_variance_ratio_
 
-# Étape 5 : Afficher le cercle de corrélation
-def plot_correlation_circle(components, feature_names):
-    """
-    Affiche le cercle de corrélation pour les deux premières composantes principales.
-    :param components: Composantes principales (axes de l'ACPN).
-    :param feature_names: Noms des caractéristiques (mots visuels).
-    """
-    fig, ax = plt.subplots(figsize=(8, 8))
-    for i, (x, y) in enumerate(components[:2].T):  # Prendre les deux premières composantes
-        ax.arrow(0, 0, x, y, head_width=0.05, head_length=0.05, fc='r', ec='r')
-        ax.text(x, y, feature_names[i], color='b', fontsize=12)
-    circle = plt.Circle((0, 0), 1, color='blue', fill=False)
-    ax.add_artist(circle)
-    ax.set_xlim(-1.1, 1.1)
-    ax.set_ylim(-1.1, 1.1)
-    ax.set_xlabel("Composante Principale 1")
-    ax.set_ylabel("Composante Principale 2")
-    ax.set_title("Cercle de Corrélation")
-    plt.show()
-
-# Étape 6 : Afficher les résultats de l'ACPN
-def plot_acpn_results(features_reduced, labels=None):
+# Étape 5 : Visualiser les résultats
+def plot_results(features_reduced, labels=None):
     """
     Affiche les résultats de l'ACPN dans un graphique 2D.
     :param features_reduced: Tableau NumPy des caractéristiques réduites.
@@ -115,7 +96,7 @@ def plot_acpn_results(features_reduced, labels=None):
 # Fonction principale
 def main():
     # Chemin du dossier contenant les images
-    folder_path = "faces"  # Remplacez par le chemin de votre dossier
+    folder_path = "faces/"  # Remplacez par le chemin de votre dossier
 
     # Charger les images
     images = load_images_from_folder(folder_path)
@@ -126,20 +107,15 @@ def main():
     print(f"Descripteurs SIFT extraits pour {len(descriptors_list)} images.")
 
     # Créer un Bag of Visual Words (BoVW)
-    n_clusters = 100  # Nombre de mots visuels
-    features = create_bovw(descriptors_list, n_clusters)
+    features = create_bovw(descriptors_list, n_clusters=100)
     print(f"Caractéristiques BoVW extraites : {features.shape}")
 
     # Appliquer l'ACPN
-    features_reduced, variance_explained, components = apply_acpn(features)
+    features_reduced, variance_explained = apply_acpn(features)
     print(f"Variance expliquée par chaque composante : {variance_explained}")
 
-    # Afficher le cercle de corrélation
-    feature_names = [f"Word {i}" for i in range(n_clusters)]  # Noms des mots visuels
-    plot_correlation_circle(components, feature_names)
-
-    # Afficher les résultats de l'ACPN
-    plot_acpn_results(features_reduced)
+    # Visualiser les résultats
+    plot_results(features_reduced)
 
 # Exécuter le programme
 if __name__ == "__main__":
