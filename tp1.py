@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Déclaration de la matrice des données
@@ -73,6 +74,54 @@ V_df = pd.DataFrame(V, index=modules, columns=modules)
 print("\nMatrice de covariance V :\n", V_df)
 
 
+# Calcul de la matrice de corrélation
+R = np.round(np.corrcoef(X, rowvar=False), 4)
+
+# Création du DataFrame pour affichage
+R_df = pd.DataFrame(R, index=modules, columns=modules)
+
+# Affichage de la matrice de corrélation
+print("\nMatrice de corrélation R :\n", R_df)
+
+# Analyse et interprétation des résultats de la matrice de covariance
+print("\nInterprétation de la matrice de covariance :")
+for i in range(len(modules)):
+    for j in range(i+1, len(modules)):
+        print(f"La covariance entre {modules[i]} et {modules[j]} est de {V[i, j]}")
+        if V[i, j] > 0:
+            print(" → Ces variables ont une relation positive : elles augmentent ou diminuent ensemble.")
+        elif V[i, j] < 0:
+            print(" → Ces variables ont une relation négative : lorsque l'une augmente, l'autre diminue.")
+        else:
+            print(" → Ces variables ne sont pas corrélées.")
+
+# Affichage d'une heatmap pour la matrice de covariance
+plt.figure(figsize=(8, 6))
+sns.heatmap(V_df, annot=True, cmap="coolwarm", fmt=".4f", linewidths=0.5)
+plt.title("Matrice de covariance")
+plt.show()
+
+# Affichage d'une heatmap pour la matrice de corrélation
+plt.figure(figsize=(8, 6))
+sns.heatmap(R_df, annot=True, cmap="coolwarm", fmt=".4f", linewidths=0.5)
+plt.title("Matrice de corrélation")
+plt.show()
+
+
+# Représentation graphique des individus dans l’espace ℜ2
+fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+couples = [(0, 4), (1, 3), (2, 3)]
+noms_couples = [("Multimedia", "Autre"), ("Maths", "Réseau"), ("Système", "Réseau")]
+
+for i, (x_idx, y_idx) in enumerate(couples):
+    axs[i].scatter(X[:, x_idx], X[:, y_idx], color='blue', alpha=0.7)
+    axs[i].set_xlabel(noms_couples[i][0])
+    axs[i].set_ylabel(noms_couples[i][1])
+    axs[i].set_title(f"Nuage de points : {noms_couples[i][0]} vs {noms_couples[i][1]}")
+
+plt.tight_layout()
+plt.show()
 
 
 
