@@ -147,7 +147,13 @@ print(f"E4 - E7 : {dist_E4_E7_proj:.4f}")
 print(f"E5 - E7 : {dist_E5_E7_proj:.4f}")
 
 
+# Calcul du carré de la distance de chaque individu au centre du nuage
+carre_distances = np.sum(projections ** 2, axis=1)
 
+# Affichage des résultats
+print("\nCarré des distances de chaque individu au centre du nuage dans le sous-espace factoriel:")
+for i, d2 in enumerate(carre_distances, start=1):
+    print(f"Individu {i}: {d2:.4f}")
 
 
 
