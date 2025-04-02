@@ -80,6 +80,72 @@ for i in range(len(valeurs_propres)):
     print(f"Vecteur propre {i+1} vérification: {resultat}")
 
 
+# Représentation graphique des valeurs propres
+plt.figure(figsize=(8, 5))
+plt.bar(range(1, len(valeurs_propres) + 1), valeurs_propres, color='skyblue')
+plt.xlabel("Composantes Principales")
+plt.ylabel("Valeurs Propres")
+plt.title("Diagramme des Valeurs Propres")
+plt.xticks(range(1, len(valeurs_propres) + 1))
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+
+# --- Création du tableau des valeurs propres et des taux d'inertie ---
+inertie_expliquee = valeurs_propres / np.sum(valeurs_propres)
+inertie_cumulee = np.cumsum(inertie_expliquee)
+
+df_inertie = pd.DataFrame({
+    "Valeurs propres": valeurs_propres,
+    "Taux d'inertie expliquée": inertie_expliquee,
+    "Taux d'inertie cumulée": inertie_cumulee
+})
+print("\nTableau des valeurs propres et des taux d'inertie:")
+print(df_inertie.round(4))
+
+
+# Détermination des axes factoriels retenus
+seuil_inertie = 0.80  # Seuil de 80%
+n_axes = np.argmax(inertie_cumulee >= seuil_inertie) + 1  # Nombre de dimensions retenues
+
+print(f"\nNombre d'axes factoriels retenus: {n_axes}")
+
+# Affichage des vecteurs propres associés aux axes retenus
+axes_factoriels = vecteurs_propres[:, :n_axes]
+df_axes = pd.DataFrame(axes_factoriels, columns=[f"Axe {i+1}" for i in range(n_axes)])
+print("\nAxes factoriels retenus:")
+print(df_axes.round(4))
+
+# --- Calcul des projections des individus sur les axes principaux retenus ---
+projections = np.dot(X_standard, axes_factoriels)
+df_projections = pd.DataFrame(projections, columns=[f"Axe {i+1}" for i in range(n_axes)], index=individus)
+print("\nProjections des individus sur les axes principaux:")
+print(df_projections.round(4))
+
+# --- Représentation graphique des projections ---
+plt.figure(figsize=(8, 6))
+plt.scatter(projections[:, 0], projections[:, 1], color='red', label='Individus')
+for i, txt in enumerate(individus):
+    plt.annotate(txt, (projections[i, 0], projections[i, 1]), fontsize=12, color='black')
+plt.axhline(0, color='gray', linestyle='--')
+plt.axvline(0, color='gray', linestyle='--')
+plt.xlabel("Axe 1")
+plt.ylabel("Axe 2")
+plt.title("Projection des individus sur le sous-espace factoriel")
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.legend()
+plt.show()
+
+# Distances Euclidiennes dans le sous-espace factoriel retenu
+dist_E4_E5_proj = distance_euclidienne(projections[3], projections[4])
+dist_E4_E7_proj = distance_euclidienne(projections[3], projections[6])
+dist_E5_E7_proj = distance_euclidienne(projections[4], projections[6])
+
+print("\nDistances Euclidiennes dans le sous-espace factoriel:")
+print(f"E4 - E5 : {dist_E4_E5_proj:.4f}")
+print(f"E4 - E7 : {dist_E4_E7_proj:.4f}")
+print(f"E5 - E7 : {dist_E5_E7_proj:.4f}")
+
 
 
 
